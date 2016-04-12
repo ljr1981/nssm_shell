@@ -73,6 +73,45 @@ feature -- Test routines
 			l_remove := l_nssm.last_nssm_command_result
 		end
 
+	start_stop_test
+			-- `start_stop_test'.
+		local
+			l_nssm: NSSM_ACCESSOR_32
+			l_install,
+			l_start,
+			l_pause,
+			l_restart,
+			l_stop,
+			l_remove: detachable STRING
+		do
+			create l_nssm
+			l_nssm.nssm_install_program ("test_service", "C:\Users\lrix\Documents\GitHub\nssm_shell\test_service.exe")
+			l_install := l_nssm.last_nssm_command_result
+			if attached l_install as al_item then print (al_item + "%N") end
+
+			l_nssm.nssm_start_service ("test_service")
+			l_start := l_nssm.last_nssm_command_result
+			if attached l_start as al_item then print (al_item + "%N") end
+
+			l_nssm.nssm_pause_service ("test_service")
+			l_pause := l_nssm.last_nssm_command_result
+			if attached l_pause as al_item then print (al_item + "%N") end
+
+			l_nssm.nssm_restart_service ("test_service")
+			l_restart := l_nssm.last_nssm_command_result
+			if attached l_restart as al_item then print (al_item + "%N") end
+
+			l_nssm.nssm_stop_service ("test_service")
+			l_stop := l_nssm.last_nssm_command_result
+			if attached l_stop as al_item then print (al_item + "%N") end
+
+			l_nssm.nssm_remove_confirmed ("test_service")
+			l_remove := l_nssm.last_nssm_command_result
+			if attached l_remove as al_item then print (al_item + "%N") end
+
+--			check False end
+		end
+
 end
 
 

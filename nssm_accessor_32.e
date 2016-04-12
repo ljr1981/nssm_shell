@@ -35,6 +35,102 @@ feature {TEST_SET_BRIDGE} -- Implementation: Service Installation
 			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
 		end
 
+	nssm_start_service (a_service_name: STRING)
+			-- `nssm_start_service' `a_service_name'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe start " + a_service_name
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+	nssm_restart_service (a_service_name: STRING)
+			-- `nssm_restart_service' `a_service_name'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe restart " + a_service_name
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+	nssm_stop_service (a_service_name: STRING)
+			-- `nssm_stop_service' `a_service_name'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe stop " + a_service_name
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+	nssm_service_status (a_service_name: STRING)
+			-- `nssm_service_status' `a_service_name'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe status " + a_service_name
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+	nssm_pause_service (a_service_name: STRING)
+			-- `nssm_pause_service' `a_service_name'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe pause " + a_service_name
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+	nssm_continue_service (a_service_name: STRING)
+			-- `nssm_continue_service' `a_service_name'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe continue " + a_service_name
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+	nssm_rotate_service (a_service_name: STRING)
+			-- `nssm_rotate_service' `a_service_name'.
+		note
+			design: "[
+				nssm rotate triggers on-demand rotation for nssm services with I/O redirection 
+				and online rotation enabled. nssm accepts user-defined control 128 as a cue to 
+				begin output file rotation. Non-nssm services might respond to control 128 in 
+				their own way (or ignore it, or crash).
+				]"
+			EIS: "src=https://nssm.cc/commands"
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe rotate " + a_service_name
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+	nssm_get_service_parameter (a_service_name, a_parameter: STRING): STRING
+			-- `nssm_get_service_parameter' `a_service_name' `a_parameter'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe get " + a_service_name + " " + a_parameter
+			Result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
 feature {TEST_SET_BRIDGE} -- Implementation: Service Removal
 
 	nssm_remove_confirmed (a_service_name: STRING)
