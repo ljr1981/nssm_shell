@@ -7,9 +7,51 @@ class
 	NSSM_ACCESSOR_32
 
 inherit
-	LE_LOGGING_AWARE
+	FW_PROCESS_HELPER
+
+feature {TEST_SET_BRIDGE} -- Implementation: Service Installation
+
+	nssm_install (a_service_name: STRING)
+			-- `nssm_install' `a_service_name'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe install " + a_service_name
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+	nssm_install_program (a_service_name, a_program: STRING)
+			-- `nssm_install' `a_service_name' using `a_program'.
+			-- By default the service's startup directory will be set
+			-- to the directory containing the program.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe install " + a_service_name + " " + a_program
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
+
+feature {TEST_SET_BRIDGE} -- Implementation: Service Removal
+
+	nssm_remove_confirmed (a_service_name: STRING)
+			-- `nssm_remove_confirmed' `a_service_name'.
+		local
+			l_cmd: STRING
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			l_cmd := ".\" + Nssm_path_string + "\nssm.exe remove " + a_service_name + " confirm"
+			last_nssm_command_result := output_of_command (l_cmd, l_env.current_working_path.name.out)
+		end
 
 feature {TEST_SET_BRIDGE} -- Implementation: Status Report
+
+	last_nssm_command_result: detachable STRING
+			-- `last_nssm_command_result'.
 
 	nssm_directory: DIRECTORY
 			-- `nssm_directory' as `nssm_relative_path'.
@@ -17,8 +59,8 @@ feature {TEST_SET_BRIDGE} -- Implementation: Status Report
 			create Result.make_with_path (nssm_relative_path)
 		end
 
-	nssm_directory_exists: BOOLEAN
-			-- `nssm_directory_exists' at `nssm_relative_path'
+	does_nssm_directory_exist: BOOLEAN
+			-- `does_nssm_directory_exist' at `nssm_relative_path'
 		do
 			Result := nssm_directory.exists
 		end
@@ -40,7 +82,13 @@ feature {TEST_SET_BRIDGE} -- Implementation: Constants
 				]"
 		once
 			create Result.make_from_string (nssm_path_string)
-			logger.write_information (Result.absolute_path.name.out)
+		end
+
+	nssm_exe_run_as_admin: STRING
+			-- `nssm_exe_run_as_admin'.
+		do
+			Result := run_as_admin_with_computer_name.twin
+			Result.replace_substring_all ("<<CMD>>", nssm_path_string + "\nssm.exe")
 		end
 
 	nssm_path_string: STRING
@@ -57,6 +105,20 @@ feature {TEST_SET_BRIDGE} -- Implementation: Constants
 
 	nssm_win32_folder_name_string: STRING = "win32"
 	nssm_win64_folder_name_string: STRING = "win64"
+
+	run_as_administrator_cmd_template: STRING = "runas /user:<<LOCAL_MACHINE_NAME>>\administrator <<CMD>>"
+
+	run_as_admin_with_computer_name: STRING
+			-- `run_as_admin_with_computer_name' based on `run_as_administrator_cmd_template'.
+		local
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			Result := run_as_administrator_cmd_template.twin
+			check has_comnputername: attached l_env.item ("COMPUTERNAME") as al_computer_name then
+				Result.replace_substring_all ("<<LOCAL_MACHINE_NAME>>", al_computer_name)
+			end
+		end
 
 invariant
 	has_nssm_exe: has_nssm_exe -- Fails due to missing nssm.exe in appropriate subfolder.
