@@ -9,11 +9,11 @@
 		<setting name="console_application" value="true"/>
 		<setting name="concurrency" value="scoop"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
-		<library name="framework" location="$GITHUB\Framework\framework.ecf"/>
-		<library name="logging_extension" location="$GITHUB\logging_extension\logging_extension.ecf"/>
+		<library name="framework" location="..\Framework\framework.ecf"/>
+		<library name="logging_extension" location="..\logging_extension\logging_extension.ecf"/>
 		<library name="process" location="$ISE_LIBRARY\library\process\process-safe.ecf"/>
-		<library name="randomizer" location="$GITHUB\randomizer\randomizer.ecf"/>
-		<library name="test_extension" location="$GITHUB\test_extension\test_extension.ecf"/>
+		<library name="randomizer" location="..\randomizer\randomizer.ecf"/>
+		<library name="test_extension" location="..\test_extension\test_extension.ecf"/>
 		<library name="thread" location="$ISE_LIBRARY\library\thread\thread-safe.ecf"/>
 		<library name="time" location="$ISE_LIBRARY\library\time\time-safe.ecf"/>
 		<cluster name="nssm_shell" location=".\" recursive="true">
