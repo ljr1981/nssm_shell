@@ -59,18 +59,36 @@ feature -- Test routines
 			end
 		end
 
+	current_path_test
+		local
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			create l_env
+			assert_32 ("has_dir", l_env.current_working_path.out.has_substring ("\GitHub\nssm_shell"))
+		end
+
 	install_and_removal_test
 			-- `install_and_removal_test'.
 		local
 			l_nssm: NSSM_ACCESSOR_32
 			l_install,
 			l_remove: detachable STRING
+			l_env: EXECUTION_ENVIRONMENT
 		do
 			create l_nssm
-			l_nssm.nssm_install_program ("test_service", "C:\Users\lrix\Documents\GitHub\nssm_shell\test_service.exe")
+			create l_env
+			l_nssm.nssm_install_program ("test_service", l_env.current_working_path.out + "\test_service.exe")
 			l_install := l_nssm.last_nssm_command_result
 			l_nssm.nssm_remove_confirmed ("test_service")
 			l_remove := l_nssm.last_nssm_command_result
+			check has_installed: attached {STRING} l_install as al_string then
+				print (al_string)
+				assert_strings_not_equal ("install_not_admin_access", "Administor access is needed to install a service", al_string)
+			end
+			check has_removed: attached {STRING} l_remove as al_string then
+				print (al_string)
+				assert_strings_not_equal ("remove_not_admin_access", "Administor access is needed to install a service", al_string)
+			end
 		end
 
 	start_stop_test
