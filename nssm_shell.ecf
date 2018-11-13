@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-15-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-15-0 http://www.eiffel.com/developers/xml/configuration-1-15-0.xsd" name="nssm_shell" uuid="1BA0E04C-ABBF-B945-7DF4-00006D505637" readonly="false" library_target="nssm_shell">
+<system xmlns="http://www.eiffel.com/developers/xml/configuration-1-18-0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.eiffel.com/developers/xml/configuration-1-18-0 http://www.eiffel.com/developers/xml/configuration-1-18-0.xsd" name="nssm_shell" uuid="1BA0E04C-ABBF-B945-7DF4-00006D505637" readonly="false" library_target="nssm_shell">
 	<description>nssm_shell implementation</description>
 	<target name="nssm_shell">
 		<root all_classes="true"/>
-		<option warning="true" void_safety="transitional" syntax="provisional">
+		<option warning="true" syntax="provisional" manifest_array_type="mismatch_warning">
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<setting name="console_application" value="true"/>
-		<setting name="concurrency" value="scoop"/>
+		<capability>
+			<concurrency support="scoop" use="thread"/>
+			<void_safety support="transitional" use="transitional"/>
+		</capability>
 		<library name="base" location="$ISE_LIBRARY\library\base\base-safe.ecf"/>
 		<library name="framework" location="..\Framework\framework.ecf"/>
 		<library name="logging_extension" location="..\logging_extension\logging_extension.ecf"/>
@@ -38,7 +41,9 @@
 		<option profile="false">
 		</option>
 		<setting name="console_application" value="false"/>
-		<setting name="concurrency" value="scoop"/>
+		<capability>
+			<concurrency support="scoop" use="thread"/>
+		</capability>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing-safe.ecf"/>
 		<cluster name="tests" location=".\tests\" recursive="true"/>
 	</target>
@@ -46,6 +51,8 @@
 		<description>A service EXE to test the operation of NSSM shell</description>
 		<root class="SERVICE_APPLICATION" feature="make"/>
 		<setting name="executable_name" value="test_service"/>
-		<setting name="concurrency" value="none"/>
+		<capability>
+			<concurrency support="none" use="none"/>
+		</capability>
 	</target>
 </system>
